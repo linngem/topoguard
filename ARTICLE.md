@@ -321,7 +321,9 @@ hypothesis to test.
    clinical history) corroborate it, with an error bound that can be documented in the product's
    risk analysis.
 2. **Multi-agent architecture design in general** (AutoGen, LangGraph, CrewAI…). Topology and
-   demand level can be evaluated before deployment, with computations that cost cents.
+   demand level can be evaluated before deployment, with computations that cost cents. In software
+   development, the same protocol applies to debugging, dead-code removal or dependency
+   upgrades (see the [worked example](#worked-example-debugging-in-software-development)).
 3. **AI auditing and safety.** A model's adoption rule (how much social pressure it needs to
    accept a plausible error) is a **measurable metric that can be compared across models**, and
    the decision log makes the system's robustness verifiable.
@@ -343,6 +345,60 @@ different models and evidence sources (code, execution, documentation), one *hoo
 them from reading each other's conclusions, and another that prevents the orchestrator from
 ending the session if it presents as confirmed anything that at least 2 of them have not
 corroborated. Minority findings are not deleted: they are escalated as hypotheses.
+
+### Worked example: debugging in software development
+
+*Illustrative scenario showing how the protocol maps onto a coding task. It was not part of the
+experiments, and the protocol has not been validated empirically on programming tasks.*
+
+**The bug.** Users of a web application report being logged out after about one hour, although
+sessions are configured to last 24 hours.
+
+**Without the gate (a debating team).** Three agents investigate and share their conclusions.
+One of them notices `SESSION_TTL = 3600` in an old configuration file and proposes it as the
+cause. The explanation is **plausible**: it fits the symptom exactly. The other two agents see
+the claim, find it coherent, and adopt it. This is the dynamic measured in the micro-experiment,
+where a plausible claim repeated by the neighbours was adopted 94–100 % of the time. The team
+ships a fix to that file, and users keep being logged out, because the file is no longer loaded
+in production.
+
+**With the protocol.** The orchestrator lists the candidate causes it has found and numbers them
+at runtime:
+
+- **C1** — `SESSION_TTL = 3600` in `config/legacy.yaml` causes the logouts.
+- **C2** — the refresh token is rejected because the server compares expiry times in local time
+  instead of UTC.
+- **C3** — the load balancer drops sticky sessions after one hour.
+
+Each claim goes to three verifiers that cannot see each other's conclusions, each with its own
+evidence source:
+
+| Claim | `code-verifier` (reads code) | `execution-verifier` (runs tests) | `docs-verifier` (documentation) | Gate decision (k = 2) |
+|---|---|---|---|---|
+| C1 | confirms: the value is in the file | **refutes**: the file is not loaded at start-up | inconclusive | **Minority** → escalated as a hypothesis |
+| C2 | confirms: `datetime.now()` used in the comparison | confirms: a test with a UTC+1 clock reproduces the logout | inconclusive | **Accepted** |
+| C3 | inconclusive | inconclusive | confirms: the balancer's default affinity timeout is 60 min | **Minority** → escalated as a hypothesis |
+
+The final report presents **C2 as the confirmed cause**, with its evidence, and lists C1 and C3 as
+hypotheses for a human to review. If the orchestrator writes "the cause is C1", the stop hook
+blocks the session until it is corrected.
+
+**What each design rule contributes in this example:**
+
+- **Independent evidence sources** are what exposed C1: reading the code *confirms* the value
+  exists, but only executing the application shows that it has no effect.
+- **Isolation between verifiers** prevents the plausible explanation (C1) from recruiting the
+  others, as it did in the debating team.
+- **Escalating minorities** keeps C3 on the table: it was supported by only one source, but it
+  may be a second, real problem, in the same way that the gate held back unexpected true
+  findings in the clinical experiments.
+- **The orchestrator does not give its opinion when delegating**: had it written "check whether
+  C1 is the cause, it looks likely", it would have acted as the hub of the star, the position from
+  which an error contaminated 47–80 % of the team.
+
+Other development tasks where the same pattern applies: deciding whether code is dead and can be
+deleted, confirming that a dependency upgrade is safe, triaging a reported vulnerability, or
+verifying claims about an API's behaviour before building on them.
 
 ## 8. Limitations
 

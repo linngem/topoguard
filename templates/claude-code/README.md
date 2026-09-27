@@ -33,6 +33,26 @@ Ask Claude something like *"Investigate why login fails; apply the corroboration
 every candidate cause"*. The orchestrator lists findings (C1, C2…), launches the three
 verifiers and writes the report according to `.verification/DECISIONS.md`.
 
+The IDs C1, C2… are **not configured in advance**: the orchestrator assigns them at runtime to
+whatever candidate findings it comes up with. The only settings fixed beforehand are `K`,
+`N_MIN` and the verifier definitions.
+
+### Example
+
+Users are logged out after one hour although sessions should last 24 hours. The orchestrator
+finds three candidate causes and gets these verdicts:
+
+| Claim | code-verifier | execution-verifier | docs-verifier | Decision |
+|---|---|---|---|---|
+| C1 `SESSION_TTL = 3600` in a legacy config file | confirms | refutes (file not loaded) | inconclusive | MINORITY |
+| C2 expiry compared in local time instead of UTC | confirms | confirms (reproduced in a test) | inconclusive | ACCEPTED |
+| C3 load-balancer affinity timeout of 60 min | inconclusive | inconclusive | confirms | MINORITY |
+
+The report states C2 as the cause and lists C1 and C3 as hypotheses for human review. C1 is the
+typical *plausible error*: it fits the symptom perfectly, and a team of agents that could see
+each other would likely have converged on it. See the
+[worked example in the article](../../ARTICLE.md#worked-example-debugging-in-software-development).
+
 ## Where each design decision comes from
 
 | Decision | Experimental result behind it |
