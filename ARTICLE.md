@@ -16,17 +16,18 @@ More and more AI systems are not a single model but **teams of agents** passing 
 to each other: one reads the X-ray, another the labs, another the clinical history. If one of
 them gets something wrong or makes something up (a *hallucination*), does it spread to the rest?
 
-We took a recent network-science result on how consensus forms in groups (Savari *et al.*,
-*Scientific Reports*, 2026) and turned it into an engineering tool: **topoguard**, a Python
+A recent network-science result on how consensus forms in groups (Savari *et al.*,
+*Scientific Reports*, 2026) was turned into an engineering tool: **topoguard**, a Python
 library that evaluates the communication network of a multi-agent system *before* spending any
 LLM calls, and adds a **corroboration firewall**: a finding is accepted only if several
 independent modules confirm it.
 
-We then tested it with **real agents (Claude Haiku 4.5; Sonnet 5 and Opus 5.5 as an independent plausibility panel)** in two phases: a network of 10 agents
+The tool was then tested with **real agents (Claude Haiku 4.5; Sonnet 5 and Opus 5.5 as an
+independent plausibility panel)** in two phases: a network of 10 agents
 discussing a pneumonia case, and then **12 clinical cases** across 10 specialties, including two
 in **autoimmunity** (lupus and ANCA vasculitis). Main results:
 
-1. **LLMs filter by plausibility first** ([definitions](#definitions-what-we-mean-by-a-plausible-and-an-implausible-error)). Across 12 cases, the clinical plausibility of a finding
+1. **LLMs filter by plausibility first** ([definitions](#definitions-plausible-and-implausible-errors)). Across 12 cases, the clinical plausibility of a finding
    is the strongest factor in whether an agent adopts it. An implausible error is almost never
    adopted, even when every neighbour asserts it (≤ 8 %).
 2. **But social pressure overrides reasonable doubt.** A *plausible* error asserted by 4 or 8
@@ -94,7 +95,7 @@ social network. In the **complete** network everyone talks to everyone.*
 
 ---
 
-## 3. What we built: `topoguard`
+## 3. What was built: `topoguard`
 
 **Offline design (no LLM calls).** Network metrics (clustering, mean distance, Kirchhoff index)
 and the **bandwidth** of the leader–follower model of Savari *et al.*, which indicates how fast
@@ -117,12 +118,12 @@ plausibility panel and the analysis described below.
 
 ---
 
-## Definitions: what we mean by a plausible and an implausible error
+## Definitions: plausible and implausible errors
 
 Every **error** in this study is a finding that is **false by construction**: the case was
 written so that the patient does not have it, and it enters the team through a single agent
 that receives a fabricated datum (for example, a CT report). What varies is how well that false
-finding **fits the rest of the case**. We use two complementary definitions:
+finding **fits the rest of the case**. Two complementary definitions are used:
 
 **1. A priori design label (used to build the cases).** Before running any model, each false
 finding was labelled by how consistent it is with the vignette:
@@ -300,7 +301,7 @@ hypothesis to test.
 
 ## 6. What it means and what it is for
 
-**What we learned**
+**What was learned**
 
 - There are **two barriers** against hallucinations in a team of LLM agents. The first is
   **plausibility**, which the model applies itself and which is the stronger one. The second is
@@ -332,7 +333,7 @@ hypothesis to test.
 ## 7. Putting it into practice: a Claude Code template
 
 By default, sub-agents in Claude Code and GitHub Copilot form a **star**: the main agent
-delegates and receives results. Our data suggest this star is safe if the centre acts as a
+delegates and receives results. The data suggest this star is safe if the centre acts as a
 **gate** rather than a loudspeaker, because the sub-agents do not see each other and their
 conclusions are independent votes. By contrast, debating teams (where agents see what the
 others say) and *handoff* chains amplify plausible errors.
@@ -367,8 +368,8 @@ corroborated. Minority findings are not deleted: they are escalated as hypothese
 
 ## 9. Next steps
 
-**This work continues.** We will keep testing more models and more cases, and will publish the
-results in this repository as they become available.
+**This work continues.** More models and more cases will be tested, and the results will be
+published in this repository as they become available.
 
 1. **Compare models** (Sonnet, Opus, open-weight models) with the micro-experiment, which is
    cheap. If their conformity differs, it quantifies the value of model diversity in the gate.

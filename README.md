@@ -82,7 +82,7 @@ cache is not committed; the analysed data are in `examples/results/`.
 
 ## Status
 
-Ongoing technical note. We will keep testing more models and more cases.
+Ongoing technical note. More models and more cases will be tested.
 
 ## License
 
