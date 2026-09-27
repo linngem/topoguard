@@ -26,7 +26,7 @@ We then tested it with **real agents (Claude Haiku 4.5; Sonnet 5 and Opus 5.5 as
 discussing a pneumonia case, and then **12 clinical cases** across 10 specialties, including two
 in **autoimmunity** (lupus and ANCA vasculitis). Main results:
 
-1. **LLMs filter by plausibility first.** Across 12 cases, the clinical plausibility of a finding
+1. **LLMs filter by plausibility first** ([definitions](#definitions-what-we-mean-by-a-plausible-and-an-implausible-error)). Across 12 cases, the clinical plausibility of a finding
    is the strongest factor in whether an agent adopts it. An implausible error is almost never
    adopted, even when every neighbour asserts it (≤ 8 %).
 2. **But social pressure overrides reasonable doubt.** A *plausible* error asserted by 4 or 8
@@ -117,11 +117,43 @@ plausibility panel and the analysis described below.
 
 ---
 
+## Definitions: what we mean by a plausible and an implausible error
+
+Every **error** in this study is a finding that is **false by construction**: the case was
+written so that the patient does not have it, and it enters the team through a single agent
+that receives a fabricated datum (for example, a CT report). What varies is how well that false
+finding **fits the rest of the case**. We use two complementary definitions:
+
+**1. A priori design label (used to build the cases).** Before running any model, each false
+finding was labelled by how consistent it is with the vignette:
+
+| Label | Definition | Example (pneumonia case) |
+|---|---|---|
+| **Plausible** | Clinically coherent with the presentation: it would reasonably appear in the differential diagnosis, is compatible with the signs described, and is not contradicted by any datum in the vignette. | Pulmonary embolism: the tachycardia and 93 % oxygen saturation are compatible with it. |
+| **Intermediate** | Possible but weakly supported, or partly at odds with the data. | Acute kidney injury, although creatinine is normal. |
+| **Implausible** | Nothing in the vignette supports it, or it belongs to an unrelated organ system or presentation. | Pericardial effusion: no symptom or sign points to it. |
+
+**2. Measured plausibility (used in the phase 2 analysis).** An independent panel (Claude
+Sonnet 5 and Opus 5.5, which never acted as agents) estimated, from the vignette alone, the
+**probability (0–100) that the patient also has the finding**. The mean of 6 ratings per finding
+is the continuous plausibility score entering the regression models. The panel reproduced the a
+priori order on average (truth 0.37 > high 0.09 > medium 0.04 > low 0.01) and the two raters
+agreed closely (ρ = 0.95).
+
+The two definitions do not always coincide. "Plausible" in the design sense means **clinically
+coherent**; the panel measures **probability**. A rare but coherent diagnosis, such as pulmonary
+embolism in the pneumonia case, can be both plausible and improbable (panel score 0.03). This
+distinction turned out to matter (see §8, *Limitations*). The case-by-case labels and scores are
+listed in the [appendix](docs/CASES_AND_PROMPTS.md).
+
+---
+
 ## 4. Phase 1 — One network, one case
 
 **Design.** Ten agents (Haiku 4.5) share a pneumonia case. Three receive a real but subtle datum
 (sodium 126 mmol/L, hyponatremia). One receives a **false** datum, in two variants:
-**implausible** (pericardial effusion) or **plausible** (pulmonary embolism). They exchange
+**implausible** (pericardial effusion) or **plausible** (pulmonary embolism), as defined above.
+They exchange
 conclusions for 4 rounds; each agent only sees its neighbours. The design crosses 5 topologies,
 2 error types, 2 error entry points (hub or periphery) and 2 modes (no gate, or **local gate
 k = 2**, where an agent only sees a finding if at least 2 of its neighbours assert it), with 3
