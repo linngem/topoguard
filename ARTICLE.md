@@ -334,6 +334,31 @@ hypothesis to test.
 
 ## 7. Putting it into practice: a Claude Code template
 
+### Default topologies in current agent tools
+
+The agent tools most used in software development each impose a topology by default. The table
+summarises their documented behaviour as of September 2026 (these features change often; check
+the linked documentation):
+
+| Tool and mode | How agents communicate | Resulting topology | Implication from the experiments |
+|---|---|---|---|
+| **Claude Code — sub-agents** (default) | The main agent launches sub-agents; each works in its own context and returns its result to the caller. Sub-agents do not see each other (except those the main agent names, which can message each other). | **Star** | Safe if the centre acts as a gate, since the leaves give independent votes; dangerous if the centre relays or endorses a single claim. |
+| **Claude Code — agent teams** (experimental, off by default; `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) | A lead plus teammates that message each other directly and share a task list. | **Dense network**, close to complete | Good for exploring and challenging ideas; prone to converging on a plausible error, since agents see each other's claims. |
+| **GitHub Copilot (VS Code) — sub-agents** | Parent–child only; sub-agents return results to the parent and do not talk to each other. The `agents` field controls which sub-agents each agent may call. | **Star** | Same as Claude Code sub-agents. |
+| **GitHub Copilot (VS Code) — handoffs** | Sequential transfer from one agent to the next (e.g. plan → implement → review), carrying the conversation context. | **Chain** | The most fragile for errors: each agent hears a single upstream voice, which acts as "unanimity". |
+
+None of these tools exposes a "topology" setting. The topology is shaped indirectly through
+agent definitions (which agents exist and which tools and models they use), the orchestration
+instructions in `CLAUDE.md` or the agent prompt, and hooks that enforce rules. With an SDK
+(Claude Agent SDK, AutoGen, LangGraph) the topology can be defined explicitly.
+
+Sources: [Claude Code — agent teams](https://code.claude.com/docs/en/agent-teams) ·
+[Claude Code — sub-agents](https://code.claude.com/docs/en/sub-agents) ·
+[VS Code — custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents) ·
+[GitHub Docs — custom agents and sub-agent orchestration](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents)
+
+### The template
+
 By default, sub-agents in Claude Code and GitHub Copilot form a **star**: the main agent
 delegates and receives results. The data suggest this star is safe if the centre acts as a
 **gate** rather than a loudspeaker, because the sub-agents do not see each other and their
