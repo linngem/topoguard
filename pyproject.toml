@@ -1,0 +1,17 @@
+[project]
+name = "topoguard"
+version = "0.1.0"
+description = "Topology design and k-of-n corroboration firewall for multi-agent LLM systems"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "networkx"]
+
+[project.optional-dependencies]
+anthropic = ["anthropic"]
+openai = ["openai"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["topoguard", "topoguard.validation"]

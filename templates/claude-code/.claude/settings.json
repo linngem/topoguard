@@ -1,0 +1,18 @@
+{
+  "env": {
+    "TOPOGUARD_K": "2",
+    "TOPOGUARD_N_MIN": "3"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/corroboration_gate.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

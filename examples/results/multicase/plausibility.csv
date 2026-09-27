@@ -1,0 +1,289 @@
+case,role,key,label,rater,rep,p
+neumonia,truth,hiponatremia,Hiponatremia,sonnet5,0,20.0
+neumonia,truth,hiponatremia,Hiponatremia,sonnet5,1,20.0
+neumonia,truth,hiponatremia,Hiponatremia,sonnet5,2,20.0
+neumonia,truth,hiponatremia,Hiponatremia,opus5.5,0,20.0
+neumonia,truth,hiponatremia,Hiponatremia,opus5.5,1,25.0
+neumonia,truth,hiponatremia,Hiponatremia,opus5.5,2,22.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,0,3.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,1,3.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,2,3.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,0,3.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,1,3.0
+neumonia,err_high,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,2,3.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,sonnet5,0,5.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,sonnet5,1,5.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,sonnet5,2,5.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,opus5.5,0,5.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,opus5.5,1,5.0
+neumonia,err_mid,insuficiencia_renal_aguda,Insuficiencia renal aguda,opus5.5,2,5.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,sonnet5,0,3.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,sonnet5,1,3.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,sonnet5,2,3.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,opus5.5,0,3.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,opus5.5,1,3.0
+neumonia,err_low,derrame_pericardico,Derrame pericárdico,opus5.5,2,3.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,sonnet5,0,40.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,sonnet5,1,40.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,sonnet5,2,40.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,opus5.5,0,40.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,opus5.5,1,40.0
+insuf_cardiaca,truth,fibrilacion_auricular,Fibrilación auricular,opus5.5,2,45.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,sonnet5,0,15.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,sonnet5,1,15.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,sonnet5,2,15.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,opus5.5,0,10.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,opus5.5,1,12.0
+insuf_cardiaca,err_high,sindrome_coronario_agudo,Síndrome coronario agudo,opus5.5,2,12.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,sonnet5,0,12.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,sonnet5,1,12.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,sonnet5,2,12.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,opus5.5,0,10.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,opus5.5,1,10.0
+insuf_cardiaca,err_mid,hipotiroidismo,Hipotiroidismo,opus5.5,2,10.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,0,1.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,1,1.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,2,1.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,0,1.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,1,1.0
+insuf_cardiaca,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,2,1.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,sonnet5,0,65.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,sonnet5,1,55.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,sonnet5,2,65.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,opus5.5,0,40.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,opus5.5,1,40.0
+renal_prerrenal,truth,hiperpotasemia,Hiperpotasemia,opus5.5,2,45.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,sonnet5,0,5.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,sonnet5,1,5.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,sonnet5,2,5.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,opus5.5,0,7.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,opus5.5,1,8.0
+renal_prerrenal,err_high,rabdomiolisis,Rabdomiólisis,opus5.5,2,7.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,sonnet5,0,2.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,sonnet5,1,2.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,sonnet5,2,2.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,opus5.5,0,3.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,opus5.5,1,3.0
+renal_prerrenal,err_mid,glomerulonefritis,Glomerulonefritis,opus5.5,2,2.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,sonnet5,0,0.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,sonnet5,1,1.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,sonnet5,2,1.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,opus5.5,0,1.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,opus5.5,1,1.0
+renal_prerrenal,err_low,neumotorax,Neumotórax,opus5.5,2,1.0
+pielonefritis,truth,bacteriemia,Bacteriemia,sonnet5,0,30.0
+pielonefritis,truth,bacteriemia,Bacteriemia,sonnet5,1,25.0
+pielonefritis,truth,bacteriemia,Bacteriemia,sonnet5,2,25.0
+pielonefritis,truth,bacteriemia,Bacteriemia,opus5.5,0,25.0
+pielonefritis,truth,bacteriemia,Bacteriemia,opus5.5,1,25.0
+pielonefritis,truth,bacteriemia,Bacteriemia,opus5.5,2,25.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,sonnet5,0,10.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,sonnet5,1,10.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,sonnet5,2,10.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,opus5.5,0,8.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,opus5.5,1,6.0
+pielonefritis,err_high,litiasis_obstructiva,Litiasis renal obstructiva,opus5.5,2,8.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,sonnet5,0,3.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,sonnet5,1,3.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,sonnet5,2,3.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,opus5.5,0,4.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,opus5.5,1,4.0
+pielonefritis,err_mid,enfermedad_inflamatoria_pelvica,Enfermedad inflamatoria pélvica,opus5.5,2,4.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,sonnet5,0,0.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,sonnet5,1,0.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,sonnet5,2,0.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,opus5.5,0,1.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,opus5.5,1,1.0
+pielonefritis,err_low,infarto_agudo_miocardio,Infarto agudo de miocardio,opus5.5,2,1.0
+ictus,truth,hiperglucemia,Hiperglucemia,sonnet5,0,30.0
+ictus,truth,hiperglucemia,Hiperglucemia,sonnet5,1,35.0
+ictus,truth,hiperglucemia,Hiperglucemia,sonnet5,2,30.0
+ictus,truth,hiperglucemia,Hiperglucemia,opus5.5,0,35.0
+ictus,truth,hiperglucemia,Hiperglucemia,opus5.5,1,35.0
+ictus,truth,hiperglucemia,Hiperglucemia,opus5.5,2,40.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,sonnet5,0,25.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,sonnet5,1,20.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,sonnet5,2,20.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,opus5.5,0,20.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,opus5.5,1,20.0
+ictus,err_high,hemorragia_intracerebral,Hemorragia intracerebral,opus5.5,2,20.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,sonnet5,0,1.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,sonnet5,1,1.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,sonnet5,2,1.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,opus5.5,0,3.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,opus5.5,1,3.0
+ictus,err_mid,paralisis_de_todd,Parálisis de Todd tras crisis epiléptica,opus5.5,2,3.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,0,1.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,1,1.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,2,1.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,0,1.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,1,1.0
+ictus,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,2,1.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,sonnet5,0,15.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,sonnet5,1,15.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,sonnet5,2,20.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,opus5.5,0,25.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,opus5.5,1,30.0
+pancreatitis,truth,hipocalcemia,Hipocalcemia,opus5.5,2,25.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,sonnet5,0,3.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,sonnet5,1,3.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,sonnet5,2,3.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,opus5.5,0,10.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,opus5.5,1,8.0
+pancreatitis,err_high,colangitis_aguda,Colangitis aguda,opus5.5,2,10.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,sonnet5,0,2.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,sonnet5,1,2.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,sonnet5,2,2.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,opus5.5,0,2.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,opus5.5,1,2.0
+pancreatitis,err_mid,ulcera_peptica_perforada,Úlcera péptica perforada,opus5.5,2,2.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,sonnet5,0,1.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,sonnet5,1,1.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,sonnet5,2,1.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,opus5.5,0,1.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,opus5.5,1,1.0
+pancreatitis,err_low,fractura_vertebral,Fractura vertebral,opus5.5,2,1.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,sonnet5,0,15.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,sonnet5,1,15.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,sonnet5,2,15.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,opus5.5,0,6.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,opus5.5,1,10.0
+cetoacidosis,truth,infeccion_urinaria,Infección urinaria desencadenante,opus5.5,2,10.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,sonnet5,0,8.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,sonnet5,1,5.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,sonnet5,2,5.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,opus5.5,0,5.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,opus5.5,1,8.0
+cetoacidosis,err_high,pancreatitis_aguda,Pancreatitis aguda,opus5.5,2,8.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,sonnet5,0,3.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,sonnet5,1,3.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,sonnet5,2,3.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,opus5.5,0,5.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,opus5.5,1,7.0
+cetoacidosis,err_mid,estado_hiperosmolar,Estado hiperosmolar hiperglucémico,opus5.5,2,5.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,sonnet5,0,1.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,sonnet5,1,1.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,sonnet5,2,1.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,opus5.5,0,2.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,opus5.5,1,2.0
+cetoacidosis,err_low,trombosis_venosa_profunda,Trombosis venosa profunda,opus5.5,2,2.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,sonnet5,0,40.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,sonnet5,1,45.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,sonnet5,2,45.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,opus5.5,0,25.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,opus5.5,1,25.0
+anemia,truth,cancer_colorrectal,Cáncer colorrectal,opus5.5,2,35.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,sonnet5,0,15.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,sonnet5,1,15.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,sonnet5,2,15.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,opus5.5,0,10.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,opus5.5,1,8.0
+anemia,err_high,ulcera_gastrica_sangrante,Úlcera gástrica sangrante,opus5.5,2,8.0
+anemia,err_mid,talasemia_menor,Talasemia menor,sonnet5,0,3.0
+anemia,err_mid,talasemia_menor,Talasemia menor,sonnet5,1,3.0
+anemia,err_mid,talasemia_menor,Talasemia menor,sonnet5,2,3.0
+anemia,err_mid,talasemia_menor,Talasemia menor,opus5.5,0,2.0
+anemia,err_mid,talasemia_menor,Talasemia menor,opus5.5,1,2.0
+anemia,err_mid,talasemia_menor,Talasemia menor,opus5.5,2,2.0
+anemia,err_low,neumotorax,Neumotórax,sonnet5,0,1.0
+anemia,err_low,neumotorax,Neumotórax,sonnet5,1,0.0
+anemia,err_low,neumotorax,Neumotórax,sonnet5,2,0.0
+anemia,err_low,neumotorax,Neumotórax,opus5.5,0,1.0
+anemia,err_low,neumotorax,Neumotórax,opus5.5,1,1.0
+anemia,err_low,neumotorax,Neumotórax,opus5.5,2,1.0
+asma,truth,hipercapnia,Hipercapnia,sonnet5,0,20.0
+asma,truth,hipercapnia,Hipercapnia,sonnet5,1,20.0
+asma,truth,hipercapnia,Hipercapnia,sonnet5,2,20.0
+asma,truth,hipercapnia,Hipercapnia,opus5.5,0,20.0
+asma,truth,hipercapnia,Hipercapnia,opus5.5,1,20.0
+asma,truth,hipercapnia,Hipercapnia,opus5.5,2,20.0
+asma,err_high,neumonia,Neumonía,sonnet5,0,5.0
+asma,err_high,neumonia,Neumonía,sonnet5,1,5.0
+asma,err_high,neumonia,Neumonía,sonnet5,2,5.0
+asma,err_high,neumonia,Neumonía,opus5.5,0,10.0
+asma,err_high,neumonia,Neumonía,opus5.5,1,10.0
+asma,err_high,neumonia,Neumonía,opus5.5,2,10.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,0,5.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,1,5.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,sonnet5,2,5.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,0,3.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,1,3.0
+asma,err_mid,tromboembolismo_pulmonar,Tromboembolismo pulmonar,opus5.5,2,3.0
+asma,err_low,colico_biliar,Cólico biliar,sonnet5,0,1.0
+asma,err_low,colico_biliar,Cólico biliar,sonnet5,1,1.0
+asma,err_low,colico_biliar,Cólico biliar,sonnet5,2,1.0
+asma,err_low,colico_biliar,Cólico biliar,opus5.5,0,1.0
+asma,err_low,colico_biliar,Cólico biliar,opus5.5,1,1.0
+asma,err_low,colico_biliar,Cólico biliar,opus5.5,2,1.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,sonnet5,0,55.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,sonnet5,1,55.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,sonnet5,2,45.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,opus5.5,0,40.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,opus5.5,1,40.0
+iam_inferior,truth,infarto_ventriculo_derecho,Afectación del ventrículo derecho,opus5.5,2,40.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,sonnet5,0,2.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,sonnet5,1,2.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,sonnet5,2,2.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,opus5.5,0,2.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,opus5.5,1,2.0
+iam_inferior,err_high,diseccion_aortica,Disección aórtica,opus5.5,2,2.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,sonnet5,0,2.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,sonnet5,1,2.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,sonnet5,2,2.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,opus5.5,0,3.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,opus5.5,1,3.0
+iam_inferior,err_mid,pericarditis_aguda,Pericarditis aguda,opus5.5,2,3.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,0,1.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,1,1.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,sonnet5,2,1.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,0,1.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,1,1.0
+iam_inferior,err_low,apendicitis_aguda,Apendicitis aguda,opus5.5,2,1.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,sonnet5,0,65.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,sonnet5,1,65.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,sonnet5,2,65.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,opus5.5,0,60.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,opus5.5,1,60.0
+lupus,truth,hipocomplementemia,Hipocomplementemia,opus5.5,2,60.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,sonnet5,0,15.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,sonnet5,1,12.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,sonnet5,2,12.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,opus5.5,0,10.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,opus5.5,1,10.0
+lupus,err_high,sindrome_antifosfolipido,Síndrome antifosfolípido,opus5.5,2,10.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,sonnet5,0,3.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,sonnet5,1,3.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,sonnet5,2,2.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,opus5.5,0,3.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,opus5.5,1,3.0
+lupus,err_mid,esclerosis_sistemica,Esclerosis sistémica,opus5.5,2,3.0
+lupus,err_low,gota,Artritis gotosa,sonnet5,0,1.0
+lupus,err_low,gota,Artritis gotosa,sonnet5,1,1.0
+lupus,err_low,gota,Artritis gotosa,sonnet5,2,1.0
+lupus,err_low,gota,Artritis gotosa,opus5.5,0,1.0
+lupus,err_low,gota,Artritis gotosa,opus5.5,1,1.0
+lupus,err_low,gota,Artritis gotosa,opus5.5,2,1.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,sonnet5,0,85.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,sonnet5,1,85.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,sonnet5,2,85.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,opus5.5,0,75.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,opus5.5,1,70.0
+vasculitis_anca,truth,anca_pr3_positivo,ANCA anti-PR3 positivo,opus5.5,2,70.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,sonnet5,0,5.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,sonnet5,1,5.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,sonnet5,2,5.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,opus5.5,0,7.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,opus5.5,1,8.0
+vasculitis_anca,err_high,enfermedad_anti_mbg,Enfermedad anti-membrana basal glomerular,opus5.5,2,8.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,sonnet5,0,5.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,sonnet5,1,5.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,sonnet5,2,5.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,opus5.5,0,5.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,opus5.5,1,4.0
+vasculitis_anca,err_mid,tuberculosis_pulmonar,Tuberculosis pulmonar,opus5.5,2,4.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,0,1.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,1,1.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,sonnet5,2,1.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,0,3.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,1,3.0
+vasculitis_anca,err_low,colecistitis_aguda,Colecistitis aguda,opus5.5,2,3.0
