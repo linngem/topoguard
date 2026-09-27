@@ -80,9 +80,14 @@ cache is not committed; the analysed data are in `examples/results/`.
   plausibility); plausibility scored by models rather than clinicians.
   Not a medical device.
 
-## Status
+## Status and near-term roadmap
 
-Ongoing technical note. More models and more cases will be tested.
+Ongoing technical note; the library is a working prototype. Planned for the near term:
+
+- [ ] Automated tests, continuous integration and publication on PyPI (`pip install topoguard`)
+- [ ] `topoguard conformity --model <model>`: a benchmark command measuring any model's adoption threshold
+- [ ] Adapters for LangGraph, AutoGen and CrewAI to add the corroboration gate to existing systems
+- [ ] Results for additional models and cases
 
 ## License
 

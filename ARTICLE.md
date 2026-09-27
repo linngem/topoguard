@@ -461,6 +461,18 @@ published in this repository as they become available.
 4. Networks of 20–50 agents, and measurement of the real error correlation ρ between models,
    which determines whether the formal bound is achievable.
 
+**Near-term scope for the library.** The current release is a working prototype. The following
+improvements are planned for the near term:
+
+- **Automated tests and continuous integration**, and publication on **PyPI** so the library can
+  be installed with `pip install topoguard`.
+- A **conformity benchmark command** (`topoguard conformity --model <model>`) that runs the
+  micro-experiment on any model and reports its adoption threshold, making conformity a metric
+  that can be compared across models.
+- **Adapters for common multi-agent frameworks** (LangGraph, AutoGen, CrewAI) so the
+  corroboration gate can be added to an existing system without rewriting it.
+- **Results for additional models**, published in this repository.
+
 ## 10. How to reproduce it
 
 ```bash
