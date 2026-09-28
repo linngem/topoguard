@@ -66,6 +66,29 @@ PYTHONPATH=.. python run_validation.py --backend openai --model <m> --base-url h
 PYTHONPATH=.. python run_network_multicase.py && PYTHONPATH=.. python analyze_multicase.py
 ```
 
+### Heterogeneous-panel experiment — `validation/panel.py`
+
+Question: does mixing model families make the k-of-n gate safer than n copies of one model?
+Every agent reads the case plus the subtle true datum; in each scenario one agent also
+receives a false datum. Calls are made once per (case, condition, model, replica) and panels
+are assembled offline: family-grouped vs naive counting, with vs without MedGemma, and
+homogeneous panels, at every k. Reports FAR (injected and spontaneous), sensitivity, and the
+error correlation ρ (overall, within vs across families, with a cluster bootstrap over cases).
+
+```bash
+cd examples
+PYTHONPATH=.. python run_panel_experiment.py --dry-run    # plan and number of calls
+PYTHONPATH=.. python run_panel_experiment.py --sim        # cost-free pipeline test
+ollama pull qwen3.8:27b gpt-oss:20b gemma4:26b medgemma:27b
+PYTHONPATH=.. python run_panel_experiment.py              # Haiku 4.5 + 4 local models
+```
+
+Default panel: Claude Haiku 4.5 (API), Qwen3.8 27B, gpt-oss 20B, Gemma 4 26B and MedGemma
+27B (Ollama); Gemma and MedGemma form one independence group. Models run sequentially, so a
+single 24 GB GPU is enough; runs are resumable. With 12 cases, error correlations have wide
+intervals: more replicas (`--replicas`) narrow them only partly, since replicas of one case
+are not independent.
+
 Responses are cached (`results/<backend>/cache*`), so re-analysing never repeats calls. The
 cache is not committed; the analysed data are in `examples/results/`.
 
