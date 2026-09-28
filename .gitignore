@@ -5,3 +5,4 @@ examples/results/**/cache*/
 audit.jsonl
 .env
 .verification/
+*.egg-info/

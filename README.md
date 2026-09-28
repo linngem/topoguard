@@ -69,6 +69,33 @@ PYTHONPATH=.. python run_network_multicase.py && PYTHONPATH=.. python analyze_mu
 Responses are cached (`results/<backend>/cache*`), so re-analysing never repeats calls. The
 cache is not committed; the analysed data are in `examples/results/`.
 
+## Serving (optional) — `topoguard.serve`
+
+A panel of heterogeneous agents behind the runtime gate, exposed as an HTTP service with
+[BentoML](https://github.com/bentoml/BentoML). The agents answer independently (no agent sees
+another's output before corroboration) and only findings corroborated by ≥ k independence
+groups are returned in `accepted`.
+
+- Any OpenAI-compatible endpoint (vLLM, Ollama, llama.cpp, a BentoML deployment) and the
+  Anthropic API can be mixed. Mixing base-model families lowers ρ, which `design_gate`
+  rewards with a smaller k for the same false-acceptance bound.
+- Independence groups default to the backend name, so two copies of one model count once.
+- Stateless: one gate per request; each worker writes its own audit file. Responses are not
+  cached and the vignette is never logged (only findings and an input hash).
+- `degraded: true` signals that fewer than k groups answered, i.e. "cannot decide" rather
+  than "nothing found".
+
+```bash
+pip install -e ".[serve]"
+TOPOGUARD_PANEL=examples/serve/panel.example.json \
+  bentoml serve topoguard.serve.bento_service:TopoguardPanel
+curl -X POST localhost:3000/assess -H 'content-type: application/json' \
+  -d '{"vignette": "...", "vocab": ["neumonia_lli", "hiponatremia", "derrame_pericardico"]}'
+```
+
+The core (`topoguard.serve.Panel`) does not depend on BentoML and can be called from any
+other server. Tests: `pip install -e ".[serve,test]" && pytest tests/`.
+
 ## Known limitations
 
 - LTM/LFC models are linear or threshold-based; LLMs are not. The metrics are design *priors*

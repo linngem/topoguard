@@ -8,10 +8,12 @@ dependencies = ["numpy", "scipy", "networkx"]
 [project.optional-dependencies]
 anthropic = ["anthropic"]
 openai = ["openai"]
+serve = ["bentoml>=1.4", "openai", "anthropic"]
+test = ["pytest"]
 
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["topoguard", "topoguard.validation"]
+packages = ["topoguard", "topoguard.validation", "topoguard.serve"]

@@ -1,0 +1,13 @@
+{
+  "_comment": "Three independence groups: two self-hosted open-weight models (vLLM, OpenAI-compatible) and Claude via the Anthropic API. Give either k or design.",
+  "design": {"p_fp": 0.05, "sens": 0.85, "rho": 0.2, "max_false_acceptance": 0.01},
+  "audit_path": "audit.jsonl",
+  "agents": [
+    {"name": "qwen",   "group": "qwen-family",
+     "backend": {"kind": "openai", "model": "Qwen/Qwen3-32B", "base_url": "http://gpu-node-1:8000/v1", "temperature": 0.0}},
+    {"name": "gemma",  "group": "gemma-family",
+     "backend": {"kind": "openai", "model": "google/gemma-3-27b-it", "base_url": "http://gpu-node-2:8000/v1", "temperature": 0.0}},
+    {"name": "claude", "group": "anthropic-claude",
+     "backend": {"kind": "anthropic", "model": "claude-haiku-4-5-20251001"}}
+  ]
+}
