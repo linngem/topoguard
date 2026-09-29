@@ -1,5 +1,7 @@
 __pycache__/
 *.pyc
+.venv/
+*.egg-info/
 examples/results/**/cache*/
 .llm_cache/
 audit.jsonl
