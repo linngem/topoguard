@@ -129,15 +129,20 @@ def parse(text: str, vocab=VOCAB) -> set[str] | None:
 class LLMPolicy:
     """Agent backed by a real LLM."""
 
-    def __init__(self, backend: Backend):
+    def __init__(self, backend: Backend, independent_agents: bool = True):
         self.backend = backend
         self.name = backend.name
         self.parse_failures = 0
+        # True: each agent is an independent draw even when its prompt is identical to another
+        # agent's (e.g. star leaves). False reproduces the original runs, where the cache made
+        # identical-prompt agents share a single sampled answer.
+        self.independent_agents = independent_agents
 
     def step(self, agent: str, private: list[str], inbox: dict[str, list[str]],
              previous: set[str], replica: int, scn: Scenario = Scenario()) -> set[str]:
+        kw = {"salt": f"agent={agent}"} if self.independent_agents else {}
         out = parse(self.backend.complete(scn.system(), render_user(scn, private, inbox, previous),
-                                          replica=replica), scn.vocab)
+                                          replica=replica, **kw), scn.vocab)
         if out is None:
             self.parse_failures += 1
             return previous
