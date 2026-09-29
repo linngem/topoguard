@@ -21,6 +21,22 @@ same-family contrast for H3 is Gemma 4 × Gemma 3 instead of Gemma × MedGemma, 
 the tags with `:` replaced by `_`; H3 is run with
 `--family "gemma4_latest=gemma,gemma3_4b=gemma"`.
 
+*Second amendment before any run (29 Sep 2026, 14:50).* A smoke test showed that the 20–30B
+models do not fit the local GPU (6 GB; 71–79 % of layers on CPU, about one response per minute),
+so the panel is split:
+- **Local pair, micro-experiment only** (Ollama, both Q4_K_M, same base model):
+  `gemma3:4b` and `medgemma:4b-it-q4_K_M` (Gemma 3 4B fine-tuned on medical data). This pair
+  replaces Gemma 4 × Gemma 3 as the same-family contrast for H3 and adds a descriptive question:
+  does medical fine-tuning change conformity to plausible errors?
+  H3 is run with `--family "gemma3_4b=gemma,medgemma_4b-it-q4_K_M=gemma"`.
+- **Hosted open-weight models** (Amazon Bedrock, OpenAI-compatible endpoint, pinned model
+  versions) for the remaining families and for the network, two-source and H4 analyses. Their
+  exact model IDs will be listed here before they are run.
+- `gpt-oss:20b`, `qwen3-30b-hybrid:latest`, `gemma4:latest` and `ministral-3:8b` are no longer
+  run locally.
+- Smoke test (MedGemma, 1 replicate, not analysed): 6/708 parse failures (0.8 %) and 1 truncated
+  response, below the 5 % quality threshold; about 40 responses per minute.
+
 The exact weights digest and quantisation of each model are recorded in its `meta.json` at run
 time. If a model cannot be run (hardware, availability), it is replaced by one from a family not
 yet in the panel, and the substitution is logged below before its data are analysed.
@@ -57,9 +73,9 @@ unanimity. The *level* of conformity per model is reported descriptively (no hyp
 **H3 — independence groups (primary).** On identical items, the residual error-adoption
 correlation (after each model's own `both` rule) is lower **between families** than **within a
 model** across replicates. Supported if the lower bound of the 95 % CI of
-(mean within-model ρ − mean between-family ρ) is above 0. The same-family pair (Gemma 4 ×
-Gemma 3) is reported separately and does not enter the test.
-Families: `--family "gemma4_latest=gemma,gemma3_4b=gemma"`.
+(mean within-model ρ − mean between-family ρ) is above 0. The same-family pair (Gemma 3 4B ×
+MedGemma 4B, second amendment) is reported separately and does not enter the test.
+Families: `--family "gemma3_4b=gemma,medgemma_4b-it-q4_K_M=gemma"` (second amendment).
 
 **H4 — the firewall generalises.** For every model, in ≥ 95 % of gated (k = 2) network trials
 the error does not leave its source agent.
