@@ -220,3 +220,25 @@ def load(path) -> list[dict]:
     for r in recs:
         r["case"] = LEGACY_CASE_IDS.get(r["case"], r["case"])
     return recs
+
+
+@dataclass
+class DampedRule:
+    """Micro-experiment rule with a network-context damping of adoption:
+    logit p_adopt' = logit p_adopt − λ; retention unchanged. λ = 0 is the original rule.
+    Motivation: isolated agents over-predict how far errors travel in the network, plausibly
+    because in the network each agent also reads competing findings and its own previous report."""
+    base: MicroRule
+    lam: float
+
+    def p_adopt(self, m, n):
+        p = np.clip(self.base.p_adopt(m, n), 1e-9, 1 - 1e-9)
+        return 1 / (1 + np.exp(-(np.log(p / (1 - p)) - self.lam)))
+
+    def p_keep(self, m, n):
+        return self.base.p_keep(m, n)
+
+
+def damped_provider(provider, lam: float):
+    """Wraps a `rule_provider` so every rule it returns is damped by λ."""
+    return lambda case_id, kind: DampedRule(provider(case_id, kind), lam)

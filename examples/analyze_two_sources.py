@@ -11,17 +11,25 @@ For every model × case × topology × error type × gate, from the final round 
 Single-source reach (Haiku 4.5, same case/topology/error/gate, mean over hub and periphery
 entry) is added for comparison when available.
 
-Writes results/two_sources/_summary/{cells.csv, pooled.csv, report.md}.
+Pre-registered prospective test (Haiku 4.5 only): the two-source networks are predicted from the
+micro-experiment rule, with nothing fitted on network data, both undamped (λ = 0) and with the
+network damping λ frozen in results/multicase/posthoc_prediction.json before these data existed.
+
+Writes results/two_sources/_summary/{cells.csv, pooled.csv, report.md, prediction.json}.
 """
 import csv
+import json
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 
 from run_validation import topologies
-from topoguard.validation import load, pair_seeds
-from topoguard.validation.analysis import iter_trials, observed
+from topoguard.validation import compare, load, micro, pair_seeds
+from topoguard.validation.analysis import _score, iter_trials, observed
+from topoguard.validation.plausibility import load_scores
+
+MC = Path("results/multicase")
 
 ROOT = Path("results/two_sources")
 SINGLE = [Path("results/anthropic_claude-haiku-4-5-20251001/trials.jsonl"),
@@ -62,6 +70,25 @@ def ci(x, B=2000, seed=0):
     rng = np.random.default_rng(seed)
     d = [rng.choice(x, len(x)).mean() for _ in range(B)]
     return float(x.mean()), *np.percentile(d, [2.5, 97.5])
+
+
+def prospective_prediction(recs, topo):
+    """Micro rule (λ = 0) versus the frozen damped rule on the two-source networks."""
+    pl = load_scores(MC / "plausibility.csv")
+    rows = micro.to_rows(micro.load(MC / "micro.jsonl"), pl)
+    base = micro.rule_provider(micro.fit_rule([r for r in rows if r["cond"] == "adopt"], "both"),
+                               micro.fit_rule([r for r in rows if r["cond"] == "keep"], "both"), pl)
+    lam = json.load(open(MC / "posthoc_prediction.json"))["damping"]["lambda"]
+    res = {"lambda_frozen": lam}
+    for label, prov in (("undamped", base), ("damped", micro.damped_provider(base, lam))):
+        cmp = compare(recs, topo, rules=prov).rows
+        res[label] = {}
+        for k in sorted({r["error_kind"] for r in cmp}):
+            rr = [r for r in cmp if r["error_kind"] == k]
+            res[label][f"error_{k}"] = _score([r["pred_error"] for r in rr],
+                                              [r["obs_error"] for r in rr])
+        res[label]["truth"] = _score([r["pred_truth"] for r in cmp], [r["obs_truth"] for r in cmp])
+    return res
 
 
 def main():
@@ -106,6 +133,18 @@ def main():
 
     if not cells:
         raise SystemExit("No results yet: run run_two_sources.py first.")
+    haiku = [d for d in ROOT.glob("claude-haiku-4-5*/") if (d / "trials.jsonl").exists()]
+    if haiku:
+        pred = prospective_prediction(load(haiku[0] / "trials.jsonl"), topo)
+        json.dump(pred, open(out / "prediction.json", "w"), indent=2)
+        report += ["## Prospective prediction (Haiku 4.5, nothing fitted on these data)", "",
+                   f"λ frozen before the run: {pred['lambda_frozen']}", "",
+                   "| finding | undamped ρ · MAE | damped ρ · MAE |", "|---|---|---|"]
+        for k in pred["undamped"]:
+            u, d = pred["undamped"][k], pred["damped"][k]
+            report.append(f"| {k} | {u['spearman']:.2f} · {u['mae']:.3f} | "
+                          f"{d['spearman']:.2f} · {d['mae']:.3f} |")
+        report.append("")
     for name, data in (("cells.csv", cells), ("pooled.csv", pooled)):
         with open(out / name, "w", newline="", encoding="utf-8") as fh:
             w = csv.DictWriter(fh, fieldnames=list(data[0]))

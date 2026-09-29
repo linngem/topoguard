@@ -19,7 +19,7 @@ import networkx as nx
 import numpy as np
 from scipy import optimize, stats
 
-from .harness import cond_key, iter_trials, seeds
+from .harness import cond_key, error_seeds, iter_trials, seeds  # noqa: F401 (seeds re-exported)
 
 
 class AdoptionRule(Protocol):
@@ -119,6 +119,31 @@ def simulate(G: nx.Graph, seed_nodes: list, rule: AdoptionRule, rounds: int = 4,
     return float(np.mean(reach))
 
 
+def simulate_fast(G: nx.Graph, seed_nodes: list, rule: AdoptionRule, rounds: int = 4,
+                  local_k: int | None = None, n_mc: int = 2000, seed: int = 0) -> float:
+    """Vectorised version of `simulate` (all Monte-Carlo runs at once). Same model, different
+    random stream, so values differ from `simulate` by Monte-Carlo noise only. Used for grid
+    searches; the pre-registered analysis keeps `simulate`."""
+    rng = np.random.default_rng(seed)
+    nodes = list(G)
+    idx = {v: i for i, v in enumerate(nodes)}
+    A = nx.to_numpy_array(G, nodelist=nodes)
+    deg = np.broadcast_to(A.sum(1), (n_mc, len(nodes))).ravel()
+    is_seed = np.zeros(len(nodes), bool)
+    is_seed[[idx[s] for s in seed_nodes]] = True
+    s = np.tile(is_seed, (n_mc, 1))
+    for _ in range(rounds):
+        cnt = s.astype(float) @ A
+        if local_k:
+            cnt = np.where(cnt >= local_k, cnt, 0)
+        c = cnt.ravel()
+        pa = np.asarray(rule.p_adopt(c, deg)).reshape(s.shape)
+        pk = np.asarray(rule.p_keep(c, deg)).reshape(s.shape)
+        u = rng.random(s.shape)
+        s = is_seed | np.where(s, u < pk, u < pa)
+    return float(s.mean())
+
+
 def observed(records: list[dict]) -> dict[tuple, dict[str, float]]:
     """Final reach per trial: 'error' (that trial's error) and 'truth'."""
     out = {}
@@ -174,11 +199,11 @@ def compare(records: list[dict], topologies: dict[str, nx.Graph], rounds: int | 
                 fit_cache[t] = fit_all(train)
             r_err, r_tru = fit_cache[t][ek], fit_cache[t]["truth"]
         G = topologies[t]
-        err, truth = seeds(G, pos, n_truth)
+        errs, truth = error_seeds(G, pos, n_truth)      # one source, or two for pos == "pair"
         rows.append({
             "case": case, "topology": t, "error_kind": ek, "error_pos": pos, "local_k": k,
             "n_rep": len(vals),
-            "pred_error": simulate(G, [err], r_err, rounds, k),
+            "pred_error": simulate(G, errs, r_err, rounds, k),
             "obs_error": float(np.mean([v["error"] for v in vals])),
             "pred_truth": simulate(G, truth, r_tru, rounds, k),
             "obs_truth": float(np.mean([v["truth"] for v in vals])),

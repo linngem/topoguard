@@ -30,6 +30,23 @@ over trials), from the final round:
   share neighbours; second-order spread is rarer than first-order escape.
 - The implausible error escapes in ≤ 10 % of gated trials even with two sources.
 
+## Prospective test of the network-damped rule (Haiku 4.5)
+
+The Phase-2 micro-experiment rule over-predicts how far errors travel in the network. A single
+network-damping parameter (logit of adoption lowered by λ, retention unchanged) was fitted
+post hoc on the single-source network data: **λ = 1.2**, frozen in
+`../multicase/posthoc_prediction.json` (`posthoc_prediction.py`) before any two-source data
+existed. On those data it halved the mean absolute error for plausible errors (13.6 → 6.4 pp;
+6.6 pp leave-one-case-out) without changing rank correlations.
+
+On the two-source networks, with nothing fitted on them, `analyze_two_sources.py` compares the
+undamped rule (λ = 0) and the damped rule (λ = 1.2):
+- **Expected:** lower mean absolute error for the plausible error with the damped rule.
+- **Not expected:** a change in Spearman correlation (a uniform logit shift barely reorders
+  conditions); it is reported for completeness.
+If the damped rule does not reduce the error on these new data, the damping is reported as
+not replicated and the undamped rule remains the main result.
+
 ## Changes after the analysis was run
 
 *(none yet)*
