@@ -170,7 +170,8 @@ asserting it (phase 1, pneumonia case).*
 
 Under the same social pressure, the response depends on content: hyponatremia is adopted with
 half of the neighbours in favour, pulmonary embolism needs near-unanimity, and pericardial
-effusion was never adopted.
+effusion is adopted only sporadically: it stayed in its source agent in most networks, although
+entering at the star's hub it still reached 27 % of the team on average.
 
 ![Plausible error by entry point](docs/figures/fig3_error_by_position.png)
 
