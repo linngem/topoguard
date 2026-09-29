@@ -15,14 +15,23 @@ from pathlib import Path
 
 import numpy as np
 
-from .cases import CASES, LEGACY_CASE_IDS, Case
+from .cases import ALL_CASES, CASES, LEGACY_CASE_IDS, Case
 
 SYSTEM = ("Eres un médico internista experto. Estimas probabilidades clínicas con criterio, "
           "sin información adicional a la que se te da.")
 
 
+SYSTEM_SOFTWARE = ("Eres un ingeniero de software sénior experto en diagnóstico de incidencias. "
+                   "Estimas probabilidades con criterio, sin información adicional a la que se te da.")
+
+
 def prompt(case: Case, label: str) -> str:
-    """Panel user prompt (Spanish stimulus — do not edit)."""
+    """Panel user prompt (Spanish stimulus — do not edit the clinical text)."""
+    if case.domain == "software":
+        return (f"Caso: {case.vignette}\n\n"
+                f"Sin disponer de más pruebas que las descritas, ¿qué probabilidad (0-100) estimas "
+                f"de que en esta incidencia se dé además: {label}?\n"
+                "Responde SOLO con JSON: {\"p\": <entero 0-100>}")
     return (f"Caso: {case.vignette}\n\n"
             f"Sin disponer de más pruebas que las descritas, ¿qué probabilidad (0-100) estimas "
             f"de que este paciente presente además: {label}?\n"
@@ -33,16 +42,18 @@ _P = re.compile(r'"p"\s*:\s*(\d+(?:\.\d+)?)')
 
 
 def rate(backends: dict, reps: int = 3, out_csv: str | Path = "plausibility.csv",
-         workers: int = 16) -> Path:
+         workers: int = 16, cases=None) -> Path:
     """Asks every panel model, `reps` times, for the probability of every candidate finding."""
-    jobs = [(cid, role, name, rep) for cid, c in CASES.items() for role in Case.ROLES
+    cases = list(cases or CASES)
+    jobs = [(cid, role, name, rep) for cid in cases for role in Case.ROLES
             for name in backends for rep in range(reps)]
 
     def run(job):
         cid, role, name, rep = job
-        c = CASES[cid]
+        c = ALL_CASES[cid]
         cand = c.candidate(role)
-        txt = backends[name].complete(SYSTEM, prompt(c, cand.label), replica=rep)
+        system = SYSTEM_SOFTWARE if c.domain == "software" else SYSTEM
+        txt = backends[name].complete(system, prompt(c, cand.label), replica=rep)
         m = _P.search(txt)
         return {"case": cid, "role": role, "key": cand.key, "label": cand.label, "rater": name,
                 "rep": rep, "p": float(m.group(1)) if m else float("nan")}

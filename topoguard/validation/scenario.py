@@ -20,7 +20,7 @@ import re
 from dataclasses import dataclass, field
 
 from .backends import Backend
-from .cases import CASES, ERROR_ROLE, Case
+from .cases import ALL_CASES, CASES, ERROR_ROLE, Case
 
 # --- compatibility with the first experiment (pneumonia case) ------------------
 _N = CASES["pneumonia"]
@@ -45,7 +45,7 @@ class Scenario:
 
     @property
     def case(self) -> Case:
-        return CASES[self.case_id]
+        return ALL_CASES[self.case_id]
 
     @property
     def vignette(self) -> str:
@@ -80,13 +80,20 @@ class Scenario:
         return tuple(self.case.candidate(r).key for r in Case.ROLES)
 
     def system(self) -> str:
-        return system_prompt(self.vocab)
+        return system_prompt(self.vocab, self.case.domain)
 
 
-def system_prompt(vocab) -> str:
+_ROLE_LINE = {  # only the domain phrase differs; the clinical text is byte-identical to phases 1-3
+    "clinical": "Eres un módulo de un sistema multi-agente de apoyo al diagnóstico clínico. ",
+    "software": "Eres un módulo de un sistema multi-agente de apoyo al diagnóstico de incidencias "
+                "de software. ",
+}
+
+
+def system_prompt(vocab, domain: str = "clinical") -> str:
     """System prompt sent to the evaluated agents (Spanish stimulus — do not edit)."""
     return (
-        "Eres un módulo de un sistema multi-agente de apoyo al diagnóstico clínico. "
+        _ROLE_LINE[domain] +
         "Integra tus datos y lo que informan otros módulos, con criterio propio. "
         "Responde SOLO con JSON: {\"presentes\": [claves], \"razon\": \"<máx 20 palabras>\"}. "
         "Usa únicamente claves de esta lista: " + ", ".join(vocab) + ".")

@@ -47,6 +47,7 @@ class Case:
     err_low: Candidate
     vignette_en: str = ""
     base_label_en: str = ""
+    domain: str = "clinical"          # "clinical" | "software" (sets the agent and panel prompts)
 
     ROLES = ("truth", "err_high", "err_mid", "err_low")
 
@@ -326,6 +327,82 @@ CASES: dict[str, Case] = {c.id: c for c in [
         base_label_en="Systemic vasculitis with renal involvement",
     ),
 ]}
+
+# --- Out-of-domain control: software incidents (micro-experiment only) ----------------------------
+# Same structure as the clinical cases and also in Spanish, so that language does not differ from
+# the clinical stimuli. The truth is true and the three errors are false BY CONSTRUCTION of the
+# scenario; the a priori labels are the author's, the analysis uses the panel's plausibility.
+SOFTWARE_CASES: dict[str, Case] = {c.id: c for c in [
+    Case(
+        "session_logout", "software",
+        "Aplicación web (backend Python detrás de un balanceador de carga, sesiones guardadas en un "
+        "Redis compartido por todas las instancias). Desde el último despliegue, que cambió la imagen "
+        "base de los contenedores, varios usuarios informan de que se les cierra la sesión al cabo de "
+        "aproximadamente una hora, aunque la configuración documentada fija sesiones de 24 horas.",
+        "expiracion_prematura_sesion", "Expiración prematura de la sesión",
+        truth=C("caducidad_token_hora_local", "Caducidad del token comparada en hora local en lugar de UTC",
+                "Prueba: con el reloj del servidor en UTC+1 el token se rechaza a los 60 minutos; con el "
+                "reloj en UTC dura 24 horas.",
+                "Token expiry compared in local time instead of UTC",
+                "Test: with the server clock at UTC+1 the token is rejected after 60 minutes; with the "
+                "clock at UTC it lasts 24 hours."),
+        err_high=C("ttl_configuracion_heredada", "TTL de sesión de 3600 s en una configuración heredada",
+                   "Revisión: el servicio carga SESSION_TTL = 3600 desde config/legacy.yaml.",
+                   "3600 s session TTL in a legacy configuration",
+                   "Review: the service loads SESSION_TTL = 3600 from config/legacy.yaml."),
+        err_mid=C("afinidad_balanceador", "Pérdida de afinidad de sesión en el balanceador",
+                  "El balanceador tiene configurado un tiempo de afinidad de 60 minutos.",
+                  "Loss of session affinity at the load balancer",
+                  "The load balancer has a 60-minute affinity timeout configured."),
+        err_low=C("certificado_tls_caducado", "Certificado TLS caducado",
+                  "Monitorización: el certificado TLS del dominio caducó ayer.",
+                  "Expired TLS certificate",
+                  "Monitoring: the domain's TLS certificate expired yesterday."),
+        vignette_en="Web application (Python backend behind a load balancer, sessions stored in a Redis "
+                    "shared by all instances). Since the last deployment, which changed the containers' "
+                    "base image, several users report being logged out after about one hour, although the "
+                    "documented configuration sets 24-hour sessions.",
+        base_label_en="Premature session expiry",
+        domain="software",
+    ),
+    Case(
+        "duplicate_orders", "software",
+        "Un proceso nocturno importa pedidos desde una API externa a la base de datos. Algunos días "
+        "aparecen unos 30 pedidos duplicados de un total de 5.000, con el mismo identificador externo "
+        "y horas de creación separadas por pocos segundos. El proceso está programado con cron en los "
+        "servidores de aplicación, que son dos por alta disponibilidad.",
+        "pedidos_duplicados", "Duplicación de pedidos en la importación nocturna",
+        truth=C("ejecucion_concurrente_sin_bloqueo",
+                "Ejecución simultánea del proceso en los dos servidores sin bloqueo distribuido",
+                "Registros: los dos servidores inician la importación a las 02:00:03 y 02:00:05 los días "
+                "con duplicados.",
+                "Simultaneous run on both servers without a distributed lock",
+                "Logs: both servers start the import at 02:00:03 and 02:00:05 on the days with "
+                "duplicates."),
+        err_high=C("reintentos_no_idempotentes", "Reintentos ante timeouts de la API sin idempotencia",
+                   "Registros: timeouts de la API externa y reintentos automáticos las noches con "
+                   "duplicados.",
+                   "Retries after API timeouts without idempotency",
+                   "Logs: external API timeouts and automatic retries on the nights with duplicates."),
+        err_mid=C("cron_cambio_horario", "Doble ejecución del cron por el cambio de hora",
+                  "El cron está en hora local y el último cambio de horario fue hace tres semanas.",
+                  "Double cron run due to the daylight-saving change",
+                  "The cron runs in local time and the last daylight-saving change was three weeks ago."),
+        err_low=C("disco_lleno_bd", "Disco lleno en el servidor de base de datos",
+                  "Monitorización: el disco del servidor de base de datos está al 97 %.",
+                  "Full disk on the database server",
+                  "Monitoring: the database server's disk is at 97 %."),
+        vignette_en="A nightly job imports orders from an external API into the database. On some days "
+                    "about 30 duplicated orders appear out of 5,000, with the same external identifier "
+                    "and creation times a few seconds apart. The job is scheduled with cron on the "
+                    "application servers, of which there are two for high availability.",
+        base_label_en="Duplicated orders in the nightly import",
+        domain="software",
+    ),
+]}
+
+# Every case, for lookups by id (default experiment grids still iterate over CASES only)
+ALL_CASES: dict[str, Case] = {**CASES, **SOFTWARE_CASES}
 
 # Network-experiment error kinds → case role
 ERROR_ROLE = {"plausible": "err_high", "implausible": "err_low", "intermediate": "err_mid"}

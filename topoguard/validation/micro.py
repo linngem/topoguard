@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 from scipy import optimize
 
-from .cases import CASES, LEGACY_CASE_IDS, Case
+from .cases import ALL_CASES, CASES, LEGACY_CASE_IDS, Case
 from .scenario import Scenario, parse, render_user
 
 ADOPT_GRID = {2: (0, 1, 2), 4: (0, 1, 2, 3, 4), 8: (0, 1, 2, 4, 6, 8)}
@@ -36,7 +36,7 @@ def _inbox(case: Case, target: str | None, n: int, m: int, seed: str) -> dict[st
 
 
 def inbox_for(cid: str, target: str | None, n: int, m: int, role, rep: int) -> dict[str, list[str]]:
-    return _inbox(CASES[cid], target, n, m, f"{_SEED_ID.get(cid, cid)}-{n}-{m}-{role}-{rep}")
+    return _inbox(ALL_CASES[cid], target, n, m, f"{_SEED_ID.get(cid, cid)}-{n}-{m}-{role}-{rep}")
 
 
 def jobs(cases=None, reps: int = 4):
@@ -62,7 +62,7 @@ def run(backend, cases=None, reps: int = 4, out_path="micro.jsonl", workers: int
 
     def one(job):
         cond, cid, n, m, role, rep = job
-        c = CASES[cid]
+        c = ALL_CASES[cid]
         scn = Scenario(cid)
         target = c.candidate(role).key if role else None
         inbox = inbox_for(cid, target, n, m, role, rep)
@@ -88,7 +88,7 @@ def to_rows(recs: list[dict], plaus: dict[tuple[str, str], float]) -> list[dict]
     for r in recs:
         if r["claims"] is None:
             continue
-        c = CASES[r["case"]]
+        c = ALL_CASES[r["case"]]
         roles = Case.ROLES if r["role"] is None else (r["role"],)
         for role in roles:
             key = c.candidate(role).key
@@ -209,7 +209,7 @@ def rule_provider(adopt: LogitRule, keep: LogitRule, plaus: dict[tuple[str, str]
     from .cases import ERROR_ROLE
 
     def provider(case_id: str, kind: str) -> MicroRule:
-        c = CASES[case_id]
+        c = ALL_CASES[case_id]
         key = c.truth.key if kind == "truth" else c.candidate(ERROR_ROLE[kind]).key
         return MicroRule(adopt, keep, plaus[(case_id, key)])
     return provider
