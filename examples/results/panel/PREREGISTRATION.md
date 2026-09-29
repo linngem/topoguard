@@ -6,17 +6,24 @@ empirical basis for counting *independence groups* rather than modules in the k-
 
 ## Models
 
-| Family | Model (Ollama, local) | Role |
+| Family | Model (Ollama tag, local) | Role |
 |---|---|---|
 | Claude (Anthropic) | Claude Haiku 4.5 — existing Phase-2 data | reference |
-| gpt-oss (OpenAI) | gpt-oss 20B | agent |
-| Qwen3 (Alibaba) | Qwen3, ~30B class | agent |
-| Gemma (Google) | Gemma, ~27B class | agent |
-| Gemma (Google) | MedGemma, ~27B class | agent; same family as Gemma |
+| gpt-oss (OpenAI) | `gpt-oss:20b` | agent |
+| Qwen3 (Alibaba) | `qwen3-30b-hybrid:latest` | agent |
+| Gemma (Google) | `gemma4:latest` | agent |
+| Gemma (Google) | `gemma3:4b` | agent; same family as Gemma 4 |
+| Mistral | `ministral-3:8b` | agent |
 
-The exact tag, weights digest and quantisation of each model are recorded in its `meta.json` at
-run time. If a model cannot be run (hardware, availability), it is replaced by one from a family
-not yet in the panel, and the substitution is logged below before its data are analysed.
+*Amendment before any run (29 Sep 2026):* MedGemma is not available on the machine used, so the
+same-family contrast for H3 is Gemma 4 × Gemma 3 instead of Gemma × MedGemma, and Ministral 3
+(Mistral) is added as a further family. Code-specialised models are excluded. Folder names are
+the tags with `:` replaced by `_`; H3 is run with
+`--family "gemma4_latest=gemma,gemma3_4b=gemma"`.
+
+The exact weights digest and quantisation of each model are recorded in its `meta.json` at run
+time. If a model cannot be run (hardware, availability), it is replaced by one from a family not
+yet in the panel, and the substitution is logged below before its data are analysed.
 
 ## Design (identical for every open-weight model)
 
@@ -50,9 +57,9 @@ unanimity. The *level* of conformity per model is reported descriptively (no hyp
 **H3 — independence groups (primary).** On identical items, the residual error-adoption
 correlation (after each model's own `both` rule) is lower **between families** than **within a
 model** across replicates. Supported if the lower bound of the 95 % CI of
-(mean within-model ρ − mean between-family ρ) is above 0. The same-family pair (Gemma ×
-MedGemma) is reported separately and does not enter the test.
-Families: `--family "<gemma tag>=gemma,<medgemma tag>=gemma"`.
+(mean within-model ρ − mean between-family ρ) is above 0. The same-family pair (Gemma 4 ×
+Gemma 3) is reported separately and does not enter the test.
+Families: `--family "gemma4_latest=gemma,gemma3_4b=gemma"`.
 
 **H4 — the firewall generalises.** For every model, in ≥ 95 % of gated (k = 2) network trials
 the error does not leave its source agent.
