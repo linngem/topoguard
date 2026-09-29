@@ -1,15 +1,15 @@
 """Cross-model analysis of the panel (Haiku 4.5 reference + every folder in results/panel/).
 
-    cd examples && PYTHONPATH=.. python analyze_panel.py            # B=1000 bootstrap
-    cd examples && PYTHONPATH=.. python analyze_panel.py --B 2000
+    cd examples && PYTHONPATH=.. python analyze_panel.py --family "<gemma>=gemma,<medgemma>=gemma"
 
 Outputs in results/panel/_summary/:
   adoption.csv        P(adopt) per model × finding role × social pressure (m = 0 vs m = n)
-  micro_rules.json    per model: leave-one-case-out log-loss (Q1) and 'both' coefficients + 95 % CI (Q2)
+  micro_rules.json    per model: Q1 log-loss, 'both' coefficients + 95 % CI, H1, H2, H4 flags
   network.csv         per model × topology × position × gate: mean final reach of the error / truth
   network_pred.json   per model: network predicted from ITS OWN micro rule, nothing fitted (Q3)
   error_corr.csv      pairwise correlation of error adoption between models (raw and residual)
   gate_design.json    ρ within model (replicas) vs ρ between models → k needed by design_gate
+  h3_correlation.json pre-registered H3: within-model vs between-family residual ρ, 95 % CI
 """
 import argparse
 import csv
@@ -32,8 +32,8 @@ PANEL = Path("results/panel")
 
 
 def discover() -> dict[str, dict]:
-    """Panel folders; Haiku's original Phase-2 files fill in whatever its panel folder lacks
-    (the micro-experiment is reused as is; its network must be re-run with independent agents)."""
+    """Panel folders plus Haiku 4.5's Phase-2 data (micro-experiment and the independent-agent
+    network re-run), unless a panel folder for Haiku exists."""
     models = {}
     for d in sorted(PANEL.glob("*/")):
         if d.name.startswith("_"):
@@ -46,7 +46,7 @@ def discover() -> dict[str, dict]:
         net = [d / "network_trials.jsonl"] if (d / "network_trials.jsonl").exists() else []
         models[d.name] = {"micro": micro_p, "network": net}
     if not any(n.startswith("claude-haiku-4-5") for n in models):
-        models = {"claude-haiku-4-5 (original)": {
+        models = {"claude-haiku-4-5": {
             "micro": MC / "micro.jsonl",
             "network": [MC / "network_trials.jsonl",
                         Path("results/anthropic_claude-haiku-4-5-20251001/trials.jsonl")]},
@@ -99,10 +99,38 @@ def within_model_rho(items, idx):
     return float(np.nanmean(vals)) if vals else float("nan")
 
 
+def _resample(items, cases):
+    """Items of the cases drawn (with repetition); the draw index replaces the case id."""
+    by_case = defaultdict(list)
+    for k, v in items.items():
+        by_case[k[0]].append((k, v))
+    return {(i, *k[1:]): v for i, c in enumerate(cases) for k, v in by_case[c]}
+
+
+def h3_stats(items, names, family, cases):
+    """Mean residual ρ within model (replica vs replica), between models of the same family and
+    between families, on the given (possibly resampled) cases. Pre-registered test (phase 3):
+    between-family < within-model."""
+    it = {n: _resample(items[n], cases) for n in names}
+    within = [within_model_rho(it[n], 1) for n in names]
+    same, diff = [], []
+    for m1, m2 in itertools.combinations(names, 2):
+        common = sorted(set(it[m1]) & set(it[m2]))
+        r = corr([it[m1][k][1] for k in common], [it[m2][k][1] for k in common])
+        (same if family[m1] == family[m2] else diff).append(r)
+    mean = lambda v: float(np.nanmean(v)) if len(v) else float("nan")  # noqa: E731
+    w, b = mean(within), mean(diff)
+    return {"within_model": w, "same_family": mean(same), "between_family": b,
+            "within_minus_between": w - b}
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--B", type=int, default=1000, help="case-bootstrap resamples")
+    ap.add_argument("--B", type=int, default=2000, help="case-bootstrap resamples")
     ap.add_argument("--panel-size", type=int, default=4, help="n modules for the gate illustration")
+    ap.add_argument("--family", default="",
+                    help="model families for H3, e.g. 'gemma3_27b=gemma,medgemma_27b=gemma'; "
+                         "unlisted models are their own family")
     a = ap.parse_args()
 
     out = PANEL / "_summary"
@@ -127,6 +155,10 @@ def main():
                            "both_coefs": {n: {"est": float(ci[1, i]), "lo": float(ci[0, i]),
                                               "hi": float(ci[2, i])}
                                           for i, n in enumerate(micro.COEF_NAMES["both"])}}
+        ad_m = {r["role"]: r for r in adoption if r["model"] == name}
+        rules_out[name]["h1_plausibility_positive"] = bool(ci[0, 1] > 0)
+        rules_out[name]["h2_high_over_low_unanimous"] = bool(
+            ad_m["err_high"]["p_adopt_unanimous"] > ad_m["err_low"]["p_adopt_unanimous"])
         print(f"\n[{name}] Q1 winner={rules_out[name]['winner']}  "
               f"plausibility coef={ci[1, 1]:.2f} [{ci[0, 1]:.2f}, {ci[2, 1]:.2f}]")
 
@@ -157,6 +189,10 @@ def main():
                 net_rows.append({"model": name, "topology": t, "error_kind": ek, "error_pos": pos,
                                  "gate_k": k or 1, "error_reach": np.mean([v["error"] for v in vs]),
                                  "truth_reach": np.mean([v["truth"] for v in vs]), "trials": len(vs)})
+            gated = [v["error"] for (c, t, ek, pos, k, _r), v in obs.items() if k == 2]
+            contained = float(np.mean([x <= 0.1 + 1e-9 for x in gated])) if gated else float("nan")
+            rules_out[name]["h4_gate_containment"] = {"share": contained, "trials": len(gated),
+                                                      "supported": contained >= 0.95}
             prov = micro.rule_provider(rule_both, micro.fit_rule(keep, "both"), pl)
             net_pred[name] = compare(nrecs, topo, rules=prov).summary()
             e = net_pred[name].get("error_plausible", {})
@@ -174,6 +210,21 @@ def main():
                           "rho_raw": raw, "rho_residual": res})
     within = {n: {"rho_raw": within_model_rho(items[n], 0),
                   "rho_residual": within_model_rho(items[n], 1)} for n in names}
+
+    # H3 (pre-registered, phase 3): within-model vs between-family residual ρ, case bootstrap
+    h3 = {}
+    if len(names) >= 2:
+        fam = dict(kv.split("=", 1) for kv in a.family.split(",") if "=" in kv)
+        family = {n: fam.get(n, "claude" if n.startswith("claude") else n) for n in names}
+        cases = sorted({k[0] for n in names for k in items[n]})
+        rng = np.random.default_rng(0)
+        point = h3_stats(items, names, family, cases)
+        draws = [h3_stats(items, names, family, list(rng.choice(cases, len(cases))))
+                 for _ in range(a.B)]
+        h3 = {"family": family, "B": a.B, **{
+            k: {"est": point[k], "lo": float(np.nanpercentile([d[k] for d in draws], 2.5)),
+                "hi": float(np.nanpercentile([d[k] for d in draws], 97.5))} for k in point}}
+        h3["supported"] = bool(h3["within_minus_between"]["lo"] > 0)
 
     # gate illustration: same model n times (ρ within) vs one module per model (ρ between)
     gate = {}
@@ -209,6 +260,7 @@ def main():
     json.dump(rules_out, open(out / "micro_rules.json", "w"), indent=2)
     json.dump(net_pred, open(out / "network_pred.json", "w"), indent=2)
     json.dump({"within_model": within, **gate}, open(out / "gate_design.json", "w"), indent=2)
+    json.dump(h3, open(out / "h3_correlation.json", "w"), indent=2)
 
     print("\nError-adoption correlation (raw | residual after each model's own rule)")
     for n, w in within.items():
@@ -220,6 +272,12 @@ def main():
         for label in ("homogeneous_panel", "heterogeneous_panel"):
             g = gate[label]
             print(f"  {label:20} ρ={g['rho']:.2f} n_eff={g['effective_n']:.2f} k={g['k']}")
+    if h3:
+        print("\nH3 · residual error correlation (95 % CI, case bootstrap)")
+        for k in ("within_model", "same_family", "between_family", "within_minus_between"):
+            d = h3[k]
+            print(f"  {k:22} {d['est']:6.2f}  [{d['lo']:6.2f}, {d['hi']:6.2f}]")
+        print(f"  supported (lower bound of within − between > 0): {h3['supported']}")
     print(f"\nwritten to {out}/")
 
 
