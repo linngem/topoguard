@@ -26,7 +26,7 @@ COND_FIELDS = ("case", "topology", "error_kind", "error_pos", "local_k", "replic
 @dataclass(frozen=True)
 class Condition:
     topology: str
-    error_pos: str            # "hub" | "periphery"
+    error_pos: str            # "hub" | "periphery" (one source) | "pair" (two sources)
     local_k: int | None       # None = unfiltered messages
     replica: int
     error_kind: str = "implausible"
@@ -40,6 +40,29 @@ def seeds(G: nx.Graph, error_pos: str, n_truth: int = 3):
     err = order[0] if error_pos == "hub" else order[-1]
     truth = [v for v in order if v != err][:n_truth]
     return err, truth
+
+
+def pair_seeds(G: nx.Graph) -> tuple[int, int]:
+    """Two error sources placed in the worst case for a k = 2 gate: the pair of nodes with the
+    most common neighbours (ties: higher summed degree, then lowest ids). Every common
+    neighbour receives the error from two sources and can therefore pass it through the gate."""
+    deg = dict(G.degree)
+    best = max(itertools.combinations(sorted(G), 2),
+               key=lambda p: (len(set(G[p[0]]) & set(G[p[1]])), deg[p[0]] + deg[p[1]],
+                              -p[0], -p[1]))
+    return best
+
+
+def error_seeds(G: nx.Graph, error_pos: str, n_truth: int = 3):
+    """Error source(s) and truth seeds. error_pos: 'hub' | 'periphery' (one source) or
+    'pair' (two sources, see `pair_seeds`)."""
+    if error_pos != "pair":
+        err, truth = seeds(G, error_pos, n_truth)
+        return [err], truth
+    errs = list(pair_seeds(G))
+    deg = dict(G.degree)
+    order = sorted(G, key=lambda v: (-deg[v], v))
+    return errs, [v for v in order if v not in errs][:n_truth]
 
 
 def _inbox(G, v, prev: dict, local_k: int | None) -> dict[str, list[str]]:
@@ -57,8 +80,8 @@ def _inbox(G, v, prev: dict, local_k: int | None) -> dict[str, list[str]]:
 def run_trial(G: nx.Graph, policy, cond: Condition, rounds: int = 4, n_truth: int = 3,
               workers: int = 10) -> list[dict]:
     scn = Scenario(cond.case, cond.error_kind)
-    err, truth = seeds(G, cond.error_pos, n_truth)
-    private = {v: ([scn.error_fact] if v == err else []) + ([scn.truth_fact] if v in truth else [])
+    errs, truth = error_seeds(G, cond.error_pos, n_truth)
+    private = {v: ([scn.error_fact] if v in errs else []) + ([scn.truth_fact] if v in truth else [])
                for v in G}
     state = {v: set() for v in G}
     records = []
@@ -76,7 +99,7 @@ def run_trial(G: nx.Graph, policy, cond: Condition, rounds: int = 4, n_truth: in
                 records.append({
                     **cond.__dict__, "backend": policy.name, "round": r, "agent": v,
                     "degree": G.degree[v], "error_key": scn.error_key, "truth_key": scn.truth_key,
-                    "error_seed": v == err, "truth_seed": v in truth,
+                    "error_seed": v in errs, "truth_seed": v in truth,
                     "claims": sorted(out),
                     "inbox_frac": {k: (sum(k in ks for ks in inbox.values()) / len(inbox)
                                        if inbox else 0.0) for k in scn.tracked},
