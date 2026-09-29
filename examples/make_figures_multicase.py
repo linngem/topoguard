@@ -3,6 +3,7 @@
     cd examples && PYTHONPATH=.. python make_figures_multicase.py
 """
 import csv
+import json
 from collections import defaultdict
 from pathlib import Path
 
@@ -106,7 +107,9 @@ ax.set_xlim(0, 1.03); ax.set_ylim(0, 1.03)
 ax.set_xlabel("Predicted with the micro-experiment rule")
 ax.set_ylabel("Observed in the network")
 ax.set_title("Predicting the network without having seen it")
-ax.text(0.02, 0.97, "3 cases · 5 or 4 topologies · no network fitting\nρ truth 0.68 · plausible error 0.42",
+q3 = json.load(open(RES / "network_prediction_summary.json", encoding="utf-8"))["both"]
+ax.text(0.02, 0.97, "3 cases · 5 or 4 topologies · no network fitting\n"
+        f"ρ truth {q3['truth']['spearman']:.2f} · plausible error {q3['error_plausible']['spearman']:.2f}",
         transform=ax.transAxes, va="top", fontsize=9.5, color=INK2)
 ax.legend(loc="upper left", bbox_to_anchor=(0.0, 0.86), fontsize=10)
 save(fig, "fig8_prediction_from_micro.png")

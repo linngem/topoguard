@@ -10,7 +10,7 @@ answer. This script repeats both original designs exactly, but each agent is its
     cd examples
     PYTHONPATH=.. python rerun_haiku_independent.py --dry-run     # calls and rough cost
     PYTHONPATH=.. python rerun_haiku_independent.py               # both designs
-    PYTHONPATH=.. python compare_rerun.py                         # original vs re-run
+    PYTHONPATH=.. python compare_rerun.py --new-dir results/rerun_independent   # vs original
 
 Within a trial every agent is now an independent draw. Across conditions, the same agent with the
 same replica and an identical prompt (e.g. round 0 with and without the gate) still reuses its

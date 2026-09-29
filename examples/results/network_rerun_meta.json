@@ -1,0 +1,43 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "backend": "anthropic:claude-haiku-4-5-20251001",
+  "independent_agents": true,
+  "rounds": 4,
+  "designs": {
+    "pneumonia": {
+      "cases": [
+        "pneumonia"
+      ],
+      "replicas": 3,
+      "topologies": [
+        "star",
+        "small_world",
+        "scale_free_cluster",
+        "ring",
+        "complete"
+      ],
+      "parse_failures": 0,
+      "seconds": 60
+    },
+    "multicase": {
+      "cases": [
+        "inferior_mi",
+        "lupus"
+      ],
+      "replicas": 4,
+      "topologies": [
+        "star",
+        "small_world",
+        "scale_free_cluster",
+        "ring"
+      ],
+      "parse_failures": 0,
+      "seconds": 129
+    }
+  },
+  "calls": 8707,
+  "cache_hits": 10093,
+  "input_tokens": 2950192,
+  "output_tokens": 792852,
+  "cost_usd": 6.91
+}

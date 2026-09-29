@@ -24,3 +24,12 @@ original record.*
   re-computed after the migration and are identical.
 - **Bootstrap resamples increased from 300 to 2,000** so the confidence intervals do not depend
   on the order of case names. Conclusions are unchanged.
+- **Network data re-run with independent agents (29 Sep 2026).** The response cache was keyed on
+  the prompt only, so agents receiving an identical prompt in the same round (the leaves of the
+  star: 85 % of its agent-rounds) shared one sampled answer. Both network designs (pneumonia;
+  inferior MI and lupus) were re-run with the same grid, prompts and seeds, each agent drawing
+  its own answer, and Q3 was re-computed on the new data with nothing else changed. The
+  pre-registered conclusions hold: `both` rule, Spearman truth 0.68 → 0.62, plausible error
+  0.42 → 0.43; lupus star-hub contamination 80 % → 77 %; the k = 2 gate still contained every
+  error. The original network files and the full comparison are kept in
+  `examples/results/original_shared_samples/`.

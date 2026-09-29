@@ -61,7 +61,7 @@ each other would likely have converged on it. See the
 | Different models and sources | With correlated errors (ρ = 0.2) no *k* meets the false-positive bound |
 | k = 2 with 3 verifiers | The gate needs *k* lower than the number of sources; otherwise it also blocks the truth |
 | Minorities are escalated, not deleted | The gate mainly slows down unexpected truths |
-| The orchestrator does not give its opinion when delegating | In a star, what the centre says contaminated 47–80 % of the team |
+| The orchestrator does not give its opinion when delegating | In a star, what the centre says contaminated 57–77 % of the team |
 
 ## Limitations
 

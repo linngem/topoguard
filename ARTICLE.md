@@ -32,17 +32,18 @@ in **autoimmunity** (lupus and ANCA vasculitis). Main results:
    adopted, even when every neighbour asserts it (≤ 8 %).
 2. **But social pressure overrides reasonable doubt.** A *plausible* error asserted by 4 or 8
    neighbours at once is adopted **94–100 %** of the time (83 % with 2 of 2). In the network, a
-   made-up antiphospholipid syndrome in a lupus case reached **80 %** of the team when it
+   made-up antiphospholipid syndrome in a lupus case reached **77 %** of the team when it
    entered through the centre of a star network.
 3. **The firewall always held.** Requiring at least 2 neighbours to agree kept every error in
    its source agent, in all 3 cases and every network.
 4. **Its cost falls on unexpected truths.** The firewall held back a real but unexpected finding
    (hyponatremia in pneumonia), but not an expected one (hypocomplementemia in lupus).
 5. **The network can be partly predicted without seeing it.** The adoption rule measured on a
-   single isolated agent predicts spread in the network with a correlation of 0.68 for real
-   findings and 0.42 for plausible errors, although it overestimates how far errors travel.
+   single isolated agent predicts spread in the network with a correlation of 0.62 for real
+   findings and 0.43 for plausible errors, although it overestimates how far errors travel.
 
-Total cost of all experiments: **about $10** in API calls.
+Total cost of all experiments: **about $17** in API calls, including the network re-run
+described in §5.1.
 
 ---
 
@@ -158,7 +159,7 @@ They exchange
 conclusions for 4 rounds; each agent only sees its neighbours. The design crosses 5 topologies,
 2 error types, 2 error entry points (hub or periphery) and 2 modes (no gate, or **local gate
 k = 2**, where an agent only sees a finding if at least 2 of its neighbours assert it), with 3
-replicates. In total, 3,059 calls and 0 format failures.
+replicates. In total, 6,000 agent responses and 0 format failures.
 
 **Results.**
 
@@ -184,7 +185,7 @@ the star and ring, where each agent has 1 or 2 neighbours, the truth is also hel
 
 Phase 1 left three open questions. Plausibility rested on a single example of each type. It was
 unclear whether LLMs respond to the *fraction* of neighbours or to the *number* of voices. And
-the network prediction was moderate (correlation of 0.43 for the truth).
+the network prediction was moderate (correlation of 0.34 for the truth).
 
 ---
 
@@ -212,8 +213,15 @@ finding and the number of neighbours backing it is varied. 2,832 responses, 0 fo
 
 **Network in two new cases**: inferior myocardial infarction (plausible error: aortic
 dissection) and lupus (plausible error: antiphospholipid syndrome). Four topologies and 4
-replicates, with the same design as in phase 1: 6,015 new calls and 2 format failures out of
-12,800 responses.
+replicates, with the same design as in phase 1: 12,800 responses and 0 format failures.
+
+**Re-run with independent agents.** In the first version of the network runs, responses were
+cached by prompt, so agents that received an identical prompt in the same round (in practice,
+the leaves of the star, 85 % of its agent-rounds) shared a single sampled answer instead of each
+drawing their own. Both network designs were re-run with every agent as an independent draw;
+all network results reported here come from that re-run, and no conclusion changed (largest
+shift: the lupus star-hub contamination went from 80 % to 77 %; the original runs and the full
+comparison are kept in `examples/results/original_shared_samples/`).
 
 ### 5.2 Plausibility rules; the number of voices pushes
 
@@ -261,13 +269,14 @@ needs less evidence to "fire", while the unexpected needs a chorus.
 does not exist. The dashed line marks "source agent only".*
 
 - A made-up antiphospholipid syndrome entering through the **centre of the star** contaminates
-  **80 %** of the team; entering through a leaf, nobody. It is the same pattern as in the
-  pneumonia case (47 % vs 10 %), now **replicated in another case with 4 replicates**.
+  **77 %** of the team; entering through a leaf, nobody. It is the same pattern as in the
+  pneumonia case (57 % vs 10 %), now **replicated in another case with 4 replicates**.
 - It is not a general hub effect: in the **scale-free** network the error spread *less* when it
-  entered at the hub (10 %) than at the periphery (35 %). The clear vulnerability is the
+  entered at the hub (10 %) than at the periphery (38 %). The clear vulnerability is the
   **star's**, where each leaf listens only to the centre.
-- In the myocardial infarction case, the made-up **aortic dissection** did not spread in any
-  network: the panel rated it as very unlikely given the presentation (0.02).
+- In the myocardial infarction case, the made-up **aortic dissection** practically did not
+  spread: in 1 of its 64 trials it reached one agent beyond the source (star, hub entry). The panel
+  rated it as very unlikely given the presentation (0.02).
 - **With the k = 2 gate, no error left its source agent** in any case or topology.
 
 **The firewall's cost depends on how expected the truth is.** In the pneumonia case,
@@ -286,12 +295,12 @@ network data) versus observed, across the 3 cases.*
 
 | Rule used to predict the network | Truth (ρ · mean error) | Plausible error (ρ · mean error) |
 |---|---|---|
-| Fitted on the network data itself, topology held out (phase 1) | 0.23 · 18 pp | 0.37 · 8 pp |
-| **Measured in the micro-experiment, without seeing the network** | **0.68 · 7 pp** | **0.42 · 13 pp** |
+| Fitted on the network data itself, topology held out (phase 1) | 0.22 · 19 pp | 0.40 · 7 pp |
+| **Measured in the micro-experiment, without seeing the network** | **0.62 · 7 pp** | **0.43 · 14 pp** |
 
 A rule measured on **a single isolated agent across 12 cases** predicts the spread of the truth
 in the network considerably better than one fitted on the network data itself. For plausible
-errors it ranks conditions somewhat better, but **overestimates how far they spread**,
+errors it ranks conditions about as well (0.43 vs 0.40), but **overestimates how far they spread**,
 especially in the lupus case: in the network, agents resisted more than their isolated behaviour
 suggested. One possible explanation is that in the network each agent sees richer reports, with
 other competing findings, and its own previous report acts as an anchor; this remains a
@@ -419,7 +428,7 @@ blocks the session until it is corrected.
   findings in the clinical experiments.
 - **The orchestrator does not give its opinion when delegating**: had it written "check whether
   C1 is the cause, it looks likely", it would have acted as the hub of the star, the position from
-  which an error contaminated 47–80 % of the team.
+  which an error contaminated 57–77 % of the team.
 
 Other development tasks where the same pattern applies: deciding whether code is dead and can be
 deleted, confirming that a dependency upgrade is safe, triaging a reported vulnerability, or
@@ -441,8 +450,9 @@ verifying claims about an API's behaviour before building on them.
   probability, might explain adoption better.
 - The network was tested in **3 cases, with 10 agents and 3–4 replicates**. Medium-sized effects
   are still confounded with noise; the star effect is the most robust.
-- Within a replicate, conditions with identical prompts share the model's response (common
-  random numbers). This reduces variance when comparing conditions.
+- Within a trial, every agent is an independent draw. Across conditions of the same replicate,
+  an agent with an identical prompt reuses its response (common random numbers), which pairs the
+  comparisons between conditions and reduces their variance.
 - The experiments were run **in Spanish**; the stimuli are kept in Spanish in the code and data,
   with English translations in the [appendix](docs/CASES_AND_PROMPTS.md).
 - The system **is not a medical device** and is not validated for clinical use.

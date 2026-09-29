@@ -16,7 +16,7 @@ cases.
 
 - Agents filter by **plausibility** first: implausible errors almost never spread.
 - A **plausible** error repeated by 4–8 neighbours is adopted **94–100 %** of the time.
-- In a star network, an error entering at the **hub** contaminated up to **80 %** of the team.
+- In a star network, an error entering at the **hub** contaminated up to **77 %** of the team.
 - A **k = 2 corroboration gate** kept every error in its source agent, at the cost of slowing
   down *unexpected* true findings.
 

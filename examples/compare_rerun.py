@@ -2,7 +2,7 @@
 
     cd examples && PYTHONPATH=.. python compare_rerun.py [--B 2000]
 
-Writes results/rerun_independent/comparison/:
+Writes results/original_shared_samples/comparison/:
   cells.csv       per case × topology × error × position × gate: final reach old / new, Δ, 95 % CI
   by_topology.csv the same pooled over cases and positions
   report.md       the checks behind each claim of the article, old vs new
@@ -23,9 +23,13 @@ from topoguard.validation import compare, load, micro
 from topoguard.validation.analysis import iter_trials, observed
 from topoguard.validation.plausibility import load_scores
 
-OLD = {"pneumonia": Path("results/anthropic_claude-haiku-4-5-20251001/trials.jsonl"),
+ARCHIVE = Path("results/original_shared_samples")
+OLD = {"pneumonia": ARCHIVE / "pneumonia_trials.jsonl",
+       "multicase": ARCHIVE / "multicase_network_trials.jsonl"}
+# official data (independent agents); a fresh run of rerun_haiku_independent.py can be compared
+# instead with --new-dir results/rerun_independent
+NEW = {"pneumonia": Path("results/anthropic_claude-haiku-4-5-20251001/trials.jsonl"),
        "multicase": Path("results/multicase/network_trials.jsonl")}
-NEW_DIR = Path("results/rerun_independent")
 MC = Path("results/multicase")
 N = 10
 
@@ -94,13 +98,17 @@ def q3(recs, topo):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--B", type=int, default=2000)
+    ap.add_argument("--new-dir", help="compare a fresh re-run (…/pneumonia_trials.jsonl, "
+                                      "…/multicase_trials.jsonl) instead of the official data")
     a = ap.parse_args()
     rng = np.random.default_rng(0)
-    out = NEW_DIR / "comparison"
+    out = ARCHIVE / "comparison"
+    new_paths = ([Path(a.new_dir) / f"{k}_trials.jsonl" for k in OLD] if a.new_dir
+                 else list(NEW.values()))
     out.mkdir(parents=True, exist_ok=True)
 
     old = load_arm(OLD.values())
-    new = load_arm([NEW_DIR / f"{k}_trials.jsonl" for k in OLD])
+    new = load_arm(new_paths)
     if not new:
         raise SystemExit("No re-run found: run rerun_haiku_independent.py first.")
     c_old, c_new = cell_values(old), cell_values(new)
